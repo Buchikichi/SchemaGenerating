@@ -55,13 +55,6 @@ public final class EntityInfo implements Iterable<AttrInfo> {
 	}
 
 	/**
-	 * @return Returns the fieldList.
-	 */
-	public List<AttrInfo> getFieldList() {
-		return this.fieldList;
-	}
-
-	/**
 	 * @return Returns the hasDelFlag.
 	 */
 	public boolean isHasDelFlag() {
