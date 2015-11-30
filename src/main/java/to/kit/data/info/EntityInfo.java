@@ -11,10 +11,9 @@ public final class EntityInfo implements Iterable<AttrInfo> {
 	private String name;
 	private String kanji;
 	private String comment;
-	private final List<AttrInfo> fieldList = new ArrayList<>();
-	/** プライマリーキーとなっている項目の個数 */
-	private int numOfKey;
-	private List indexList;
+	private final List<AttrInfo> attrList = new ArrayList<>();
+	private final List<IndexKey> uniqList = new ArrayList<>();
+	private final List<IndexKey> indexList = new ArrayList<>();
 	/** 削除フラグ(DEL_FLAG) の項目があるかどうか */
 	private boolean hasDelFlag;
 
@@ -34,9 +33,22 @@ public final class EntityInfo implements Iterable<AttrInfo> {
 		return result;
 	}
 
+	public void add(AttrInfo attr) {
+		int uniq = attr.getUnique();
+
+		this.attrList.add(attr);
+		if (0 < uniq) {
+			this.uniqList.add(new IndexKey(uniq, attr.getName()));
+		}
+	}
+
+	public void addUniq(IndexKey val) {
+		this.uniqList.add(val);
+	}
+
 	@Override
 	public Iterator<AttrInfo> iterator() {
-		return this.fieldList.iterator();
+		return this.attrList.iterator();
 	}
 
 	//-------------------------------------------------------------------------
@@ -69,20 +81,6 @@ public final class EntityInfo implements Iterable<AttrInfo> {
 	}
 
 	/**
-	 * @return Returns the indexList.
-	 */
-	public List getIndexList() {
-		return this.indexList;
-	}
-
-	/**
-	 * @param indexList The indexList to set.
-	 */
-	public void setIndexList(List indexList) {
-		this.indexList = indexList;
-	}
-
-	/**
 	 * @return Returns the kanji.
 	 */
 	public String getKanji() {
@@ -110,17 +108,11 @@ public final class EntityInfo implements Iterable<AttrInfo> {
 		this.name = name;
 	}
 
-	/**
-	 * @return Returns the numOfKey.
-	 */
-	public int getNumOfKey() {
-		return this.numOfKey;
+	public List<IndexKey> getUniqList() {
+		return this.uniqList;
 	}
 
-	/**
-	 * @param numOfKey The numOfKey to set.
-	 */
-	public void setNumOfKey(int numOfKey) {
-		this.numOfKey = numOfKey;
+	public List<IndexKey> getIndexList() {
+		return this.indexList;
 	}
 }

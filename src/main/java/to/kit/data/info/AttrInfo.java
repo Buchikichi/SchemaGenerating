@@ -12,11 +12,17 @@ public final class AttrInfo implements Serializable {
 	/** 型. */
 	private String type;
 	/** 桁数. */
-	private String size;
+	private int size;
 	/** 主キー. */
 	private boolean primary;
+	/** UNIQUEキー. */
+	private int unique;
 	/** NOT NULL. */
 	private boolean notNull;
+	/** インデックス. */
+	private int idx;
+	/** 初期値. */
+	private String defaultVal;
 	/** 備考. */
 	private String remarks;
 
@@ -82,53 +88,6 @@ public final class AttrInfo implements Serializable {
 			result.setCharAt(0, upper);
 		}
 		return result.toString();
-	}
-
-	/**
-	 * @return
-	 */
-	public String getAttr() {
-		StringBuffer result = new StringBuffer();
-		result.append(this.name);
-		result.append(" ");
-		result.append(this.type);
-		if (this.size != null) {
-			result.append("(");
-			result.append(this.size);
-			result.append(")");
-		}
-		if (this.notNull) {
-			result.append(" NotNull");
-		}
-		return result.toString();
-	}
-
-	/**
-	 * @return
-	 */
-	public int getSizeInt() {
-		try {
-			return Integer.parseInt(this.size);
-		} catch (NumberFormatException e) {
-			// 無視
-			return 0;
-		}
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isFixed() {
-		return "CHAR".equals(this.type) && 1 < getSizeInt();
-	}
-
-	/**
-	 * 日付をあらわす文字列かどうか.
-	 * @return
-	 */
-	public boolean isStrDate() {
-		boolean isDateType = this.name.indexOf("_DATE") != -1 || this.name.indexOf("_KIGEN") != -1;
-		return "CHAR".equals(this.type) && isDateType;
 	}
 
 	//-------------------------------------------------------------------------
@@ -205,14 +164,14 @@ public final class AttrInfo implements Serializable {
 	/**
 	 * @return Returns the size.
 	 */
-	public String getSize() {
+	public int getSize() {
 		return this.size;
 	}
 
 	/**
 	 * @param size The size to set.
 	 */
-	public void setSize(String size) {
+	public void setSize(int size) {
 		this.size = size;
 	}
 
@@ -230,4 +189,27 @@ public final class AttrInfo implements Serializable {
 		this.type = type;
 	}
 
+	public int getUnique() {
+		return this.unique;
+	}
+
+	public void setUnique(int uniq) {
+		this.unique = uniq;
+	}
+
+	public int getIdx() {
+		return this.idx;
+	}
+
+	public void setIdx(int idx) {
+		this.idx = idx;
+	}
+
+	public String getDefaultVal() {
+		return this.defaultVal;
+	}
+
+	public void setDefaultVal(String defaultVal) {
+		this.defaultVal = defaultVal;
+	}
 }
