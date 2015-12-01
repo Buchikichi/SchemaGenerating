@@ -25,13 +25,18 @@ public final class DDLCreateor {
 	/** DDLのキャラセット. */
 	private static final String CHARSET = "UTF-8";
 
+	/**
+	 * UNIQUE を作成.
+	 * @param entity テーブル情報
+	 * @return UNIQUE
+	 */
 	private String makeUniq(final EntityInfo entity) {
 		StringBuilder buff = new StringBuilder();
 		List<IndexKey> uniqList = entity.getUniqList();
 		List<String> list = new ArrayList<>();
 
 		Collections.sort(uniqList);
-		//  CONSTRAINT file_input_errors_infotype_infoid_rowno_key UNIQUE (infotype, infoid, rowno)
+		//  UNIQUE (infotype, infoid, rowno)
 		for (IndexKey uniq : uniqList) {
 			list.add(uniq.getName());
 		}
@@ -41,6 +46,31 @@ public final class DDLCreateor {
 			buff.append(")\n");
 		}
 		return buff.toString();
+	}
+
+	/**
+	 * カラム情報を作成.
+	 * @param attr カラム情報
+	 * @return カラム情報
+	 */
+	private String makeColumn(AttrInfo attr) {
+		List<String> list = new ArrayList<>();
+		String type = attr.getType();
+		int size = attr.getSize();
+		String defaultVal = attr.getDefaultVal();
+
+		list.add(attr.getName());
+		if (0 < size) {
+			type += "(" + size + ")";
+		}
+		list.add(type);
+		if (attr.isNotNull()) {
+			list.add("NOT NULL");
+		}
+		if (StringUtils.isNotBlank(defaultVal)) {
+			list.add("DEFAULT " + defaultVal);
+		}
+		return '\t' + StringUtils.join(list, '\t');
 	}
 
 	/**
@@ -67,34 +97,16 @@ public final class DDLCreateor {
 		buff.append(" (\n");
 
 		for (AttrInfo attr : entity) {
-			StringBuilder line = new StringBuilder();
-			String name = attr.getName();
-			int size = attr.getSize();
-			String defaultVal = attr.getDefaultVal();
-
-			line.append("\t");
-			line.append(name);
-			line.append("\t");
-			line.append(attr.getType());
-			if (0 < size) {
-				line.append("(");
-				line.append(size);
-				line.append(")");
-			}
-			if (attr.isNotNull()) {
-				line.append("\tNOT NULL");
-			}
-			if (StringUtils.isNotBlank(defaultVal)) {
-				line.append("\tDEFAULT ");
-				line.append(defaultVal);
-			}
-			lineList.add(line.toString());
+			lineList.add(makeColumn(attr));
 			if (attr.isPrimary()) {
-				pkList.add(name);
+				pkList.add(attr.getName());
 			}
 		}
 		lineList.add("\tPRIMARY KEY(" + StringUtils.join(pkList, ',') + ")");
-		lineList.add(makeUniq(entity));
+		String uniq = makeUniq(entity);
+		if (StringUtils.isNotBlank(uniq)) {
+			lineList.add(uniq);
+		}
 		buff.append(StringUtils.join(lineList, ",\n"));
 		buff.append(");\n");
 		return buff.toString();

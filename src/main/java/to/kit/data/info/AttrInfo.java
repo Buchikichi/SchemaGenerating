@@ -2,6 +2,7 @@ package to.kit.data.info;
 import java.io.Serializable;
 
 /**
+ * カラム情報.
  * @author Hidetaka Sasai
  */
 public final class AttrInfo implements Serializable {

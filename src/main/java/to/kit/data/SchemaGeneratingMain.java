@@ -122,8 +122,11 @@ public class SchemaGeneratingMain {
 			if (!name.endsWith(".xls") && !name.endsWith(".xlsx")) {
 				continue;
 			}
+			if (name.contains("~") || name.contains("$")) {
+				continue;
+			}
 			LOG.debug(file.getAbsolutePath());
-			try (Workbook book = WorkbookFactory.create(file)) {
+			try (Workbook book = WorkbookFactory.create(file, null, true)) {
 				scanBook(schema, book);
 			}
 		}
