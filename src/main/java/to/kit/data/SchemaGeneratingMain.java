@@ -20,6 +20,10 @@ import to.kit.data.info.EntityInfo;
 import to.kit.data.info.SchemaInfo;
 import to.kit.workbook.CellUtils;
 
+/**
+ * スキーマ情報生成.
+ * @author Hidetaka Sasai
+ */
 public class SchemaGeneratingMain {
 	/** Logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(SchemaGeneratingMain.class);
@@ -106,14 +110,16 @@ public class SchemaGeneratingMain {
 		}
 	}
 
-	private void save(SchemaInfo schema) throws IOException {
-		File dir = new File("ddl");
-		DDLCreateor ddl = new DDLCreateor();
-
-		ddl.save(dir, schema);
-	}
-
-	public void execute(final File dir) throws EncryptedDocumentException, InvalidFormatException, IOException {
+	/**
+	 * 処理を実行.
+	 * @param dir 設計書読み込みディレクトリー
+	 * @param outDir 出力先
+	 * @throws EncryptedDocumentException パスワードの例外
+	 * @throws InvalidFormatException フォーマットの例外
+	 * @throws IOException 入出力例外
+	 */
+	public void execute(final File dir, final File outDir)
+			throws EncryptedDocumentException, InvalidFormatException, IOException {
 		SchemaInfo schema = new SchemaInfo();
 
 		for (File file : dir.listFiles()) {
@@ -130,24 +136,36 @@ public class SchemaGeneratingMain {
 				scanBook(schema, book);
 			}
 		}
-		save(schema);
+		DDLCreateor ddl = new DDLCreateor();
+
+		ddl.save(outDir, schema);
 	}
 
 	public static void main(final String[] args) throws Exception {
 		File dir = null;
+		File outDir = null;
 
 		if (0 < args.length) {
 			File file = new File(args[0]);
 			if (file.exists() && file.isDirectory()) {
 				dir = file;
 			}
+			if (1 < args.length) {
+				File targetDir = new File(args[1]);
+				if (targetDir.exists() && targetDir.isDirectory()) {
+					outDir = targetDir;
+				}
+			}
 		}
 		if (dir == null) {
 			LOG.error("Tell me the directory.");
 			return;
 		}
+		if (outDir == null) {
+			outDir = new File("ddl");
+		}
 		SchemaGeneratingMain app = new SchemaGeneratingMain();
 
-		app.execute(dir);
+		app.execute(dir, outDir);
 	}
 }
