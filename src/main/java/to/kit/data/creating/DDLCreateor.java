@@ -92,7 +92,11 @@ public final class DDLCreateor {
 		buff.append(tableName);
 		buff.append(" CASCADE;\n");
 
-		buff.append("CREATE TABLE ");
+		buff.append("CREATE ");
+		if (entity.isUnlogged()) {
+			buff.append("UNLOGGED ");
+		}
+		buff.append("TABLE ");
 		buff.append(tableName);
 		buff.append(" (\n");
 

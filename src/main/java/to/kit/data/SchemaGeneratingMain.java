@@ -77,10 +77,12 @@ public class SchemaGeneratingMain {
 		EntityInfo entity = new EntityInfo();
 		String tableID = CellUtils.getStringCellValue(7, 1, sheet);
 		String tableName = CellUtils.getStringCellValue(9, 1, sheet);
+		String unlogged = CellUtils.getStringCellValue(7, 15, sheet);
 
 		LOG.debug("tableID:{}({})", tableName, tableID);
 		entity.setName(tableID);
 		entity.setKanji(tableName);
+		entity.setUnlogged(StringUtils.isNotBlank(unlogged));
 		for (Row row : sheet) {
 			if (row.getRowNum() < ROW_BEGIN) {
 				continue;

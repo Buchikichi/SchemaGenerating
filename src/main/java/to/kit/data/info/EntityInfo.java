@@ -11,6 +11,7 @@ public final class EntityInfo implements Iterable<AttrInfo> {
 	private String name;
 	private String kanji;
 	private String comment;
+	private boolean unlogged;
 	private final List<AttrInfo> attrList = new ArrayList<>();
 	private final List<IndexKey> uniqList = new ArrayList<>();
 	private final List<IndexKey> indexList = new ArrayList<>();
@@ -106,6 +107,14 @@ public final class EntityInfo implements Iterable<AttrInfo> {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isUnlogged() {
+		return this.unlogged;
+	}
+
+	public void setUnlogged(boolean unlogged) {
+		this.unlogged = unlogged;
 	}
 
 	public List<IndexKey> getUniqList() {
